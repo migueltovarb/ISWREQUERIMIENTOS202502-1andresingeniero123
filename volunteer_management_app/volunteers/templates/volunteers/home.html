@@ -1,0 +1,22 @@
+{% extends 'volunteers/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1>Upcoming Activities</h1>
+{% for activity in activities %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ activity.title }}</h5>
+        <p class="card-text">{{ activity.description }}</p>
+        <p><strong>Date:</strong> {{ activity.date }}</p>
+        <p><strong>Location:</strong> {{ activity.location }}</p>
+        {% if user.is_authenticated and user.role == 'volunteer' %}
+            <a href="{% url 'inscribe_activity' activity.id %}" class="btn btn-success">Inscribe</a>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<p>No upcoming activities.</p>
+{% endfor %}
+{% endblock %}

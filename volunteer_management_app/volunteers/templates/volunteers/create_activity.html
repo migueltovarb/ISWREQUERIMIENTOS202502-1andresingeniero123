@@ -1,0 +1,12 @@
+{% extends 'volunteers/base.html' %}
+
+{% block title %}Create Activity{% endblock %}
+
+{% block content %}
+<h1>Create Activity</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% endblock %}
