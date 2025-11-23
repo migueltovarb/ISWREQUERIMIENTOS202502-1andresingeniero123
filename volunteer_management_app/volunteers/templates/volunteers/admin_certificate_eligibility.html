@@ -1,0 +1,45 @@
+{% extends "volunteers/base.html" %}
+
+{% block title %}Certificados de Voluntarios{% endblock %}
+
+{% block content %}
+<h1>Voluntarios elegibles para certificados</h1>
+
+<p>Este listado muestra los voluntarios que han completado un mínimo de {{ min_hours_required }} horas de voluntariado.</p>
+
+{% if volunteers_hours %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre Completo</th>
+            <th>Nombre de Usuario</th>
+            <th>Email</th>
+            <th>Documento ID</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Horas Completadas</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for volunteer in volunteers_hours %}
+        <tr>
+            <td>{{ volunteer.get_full_name }}</td>
+            <td>{{ volunteer.username }}</td>
+            <td>{{ volunteer.email }}</td>
+            <td>{{ volunteer.document_id }}</td>
+            <td>{{ volunteer.phone }}</td>
+            <td>{{ volunteer.address }}</td>
+            <td>{{ volunteer.total_hours|default:"0" }}</td>
+            <td>
+                <a href="{% url 'generate_certificate' volunteer.id %}" class="btn btn-primary btn-sm">Generar Certificado</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay voluntarios que hayan alcanzado el mínimo de horas para certificado.</p>
+{% endif %}
+
+{% endblock %}

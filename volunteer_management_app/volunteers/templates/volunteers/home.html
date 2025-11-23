@@ -1,22 +1,78 @@
 {% extends 'volunteers/base.html' %}
+{% load i18n %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Inicio{% endblock %}
 
 {% block content %}
-<h1>Upcoming Activities</h1>
-{% for activity in activities %}
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title">{{ activity.title }}</h5>
-        <p class="card-text">{{ activity.description }}</p>
-        <p><strong>Date:</strong> {{ activity.date }}</p>
-        <p><strong>Location:</strong> {{ activity.location }}</p>
-        {% if user.is_authenticated and user.role == 'volunteer' %}
-            <a href="{% url 'inscribe_activity' activity.id %}" class="btn btn-success">Inscribe</a>
-        {% endif %}
-    </div>
+<style>
+  .hero-section {
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+    background-size: cover;
+    color: white;
+    padding: 6rem 2rem 4rem 2rem;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
+    border-radius: 0.5rem;
+    margin-bottom: 3rem;
+  }
+  .hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+  }
+  .hero-section p {
+    font-size: 1.5rem;
+    max-width: 700px;
+    margin: 1rem auto 0 auto;
+  }
+  .card:hover {
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.3);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+</style>
+
+<section class="hero-section text-center">
+  <h1>Bienvenido al Portal de Voluntariado</h1>
+  <p>Únete a nuestra comunidad comprometida a hacer una diferencia positiva. Explora nuestras actividades y encuentra tu próxima oportunidad para ayudar.</p>
+  {% if not user.is_authenticated %}
+    <a href="{% url 'register' %}" class="btn btn-lg btn-primary mt-4">Regístrate Ahora</a>
+  {% else %}
+    <a href="{% url 'dashboard' %}" class="btn btn-lg btn-primary mt-4">Ir al Panel</a>
+  {% endif %}
+</section>
+
+<div class="container">
+  <h2 class="mb-4 text-center text-primary fw-bold">Actividades Próximas</h2>
+  {% if activities %}
+  <div class="row g-4">
+      {% for activity in activities %}
+      <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm">
+              <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">{{ activity.title }}</h5>
+                  <p class="card-text">{{ activity.description|truncatechars:120 }}</p>
+                  <div class="mt-auto pt-3 border-top">
+                      <p class="mb-1"><strong>Fecha:</strong> {{ activity.date|date:"F j, Y g:i A" }}</p>
+                      <p class="mb-2"><strong>Ubicación:</strong> {{ activity.location }}</p>
+                      <p class="mb-2"><strong>Voluntarios Necesarios:</strong> {{ activity.required_volunteers }}</p>
+                      {% if user.is_authenticated and user.role == 'volunteer' %}
+                          {% if activity.id not in assigned_activity_ids %}
+                              <a href="{% url 'inscribe_activity' activity.id %}" class="btn btn-success w-100">Inscribirse</a>
+                          {% else %}
+                              <span class="text-muted">Ya inscrito</span>
+                          {% endif %}
+                      {% else %}
+                          <p class="text-muted small">Inicia sesión para inscribirte</p>
+                      {% endif %}
+                  </div>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info text-center">
+      <h5>No hay actividades próximas.</h5>
+      <p>¡Vuelve pronto para nuevas oportunidades!</p>
+  </div>
+  {% endif %}
 </div>
-{% empty %}
-<p>No upcoming activities.</p>
-{% endfor %}
 {% endblock %}

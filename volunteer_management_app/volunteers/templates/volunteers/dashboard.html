@@ -1,19 +1,20 @@
 {% extends 'volunteers/base.html' %}
+{% load i18n %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Panel{% endblock %}
 
 {% block content %}
 <div class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-primary">Dashboard</h1>
-    <p class="lead text-muted">Welcome back, {{ user.first_name }}!</p>
+    <h1 class="display-4 fw-bold text-primary">Panel</h1>
+    <p class="lead text-muted">Bienvenido de vuelta, {{ user.first_name }}!</p>
 </div>
 
 {% if user.role == 'admin' %}
 <div class="row mb-5">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Your Activities</h2>
-            <a href="{% url 'create_activity' %}" class="btn btn-success">Create New Activity</a>
+            <h2>Tus Actividades</h2>
+            <a href="{% url 'create_activity' %}" class="btn btn-success">Crear Nueva Actividad</a>
         </div>
         <div class="row">
             {% for activity in activities %}
@@ -23,10 +24,9 @@
                         <h5 class="card-title">{{ activity.title }}</h5>
                         <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
                         <div class="mt-auto">
-                            <p class="mb-1"><strong>Date:</strong> {{ activity.date|date:"F j, Y g:i A" }}</p>
-                            <p class="mb-2"><strong>Location:</strong> {{ activity.location }}</p>
-                            <p class="mb-2"><strong>Volunteers Needed:</strong> {{ activity.required_volunteers }}</p>
-                            <a href="{% url 'record_attendance' activity.id %}" class="btn btn-primary w-100">Record Attendance</a>
+                            <p class="mb-1"><strong>Fecha:</strong> {{ activity.date|date:"F j, Y g:i A" }}</p>
+                            <p class="mb-2"><strong>Ubicación:</strong> {{ activity.location }}</p>
+                            <p class="mb-2"><strong>Voluntarios Necesarios:</strong> {{ activity.required_volunteers }}</p>
                         </div>
                     </div>
                 </div>
@@ -34,8 +34,17 @@
             {% empty %}
             <div class="col-12">
                 <div class="alert alert-info text-center">
-                    <h5>No activities created yet.</h5>
-                    <p>Start by creating your first activity!</p>
+                    <h5>No se han creado actividades aún.</h5>
+                    <p>¡Comienza creando tu primera actividad!</p>
+                    <a href="{% url 'create_activity' %}" class="btn btn-primary mt-3">Crear Actividad</a>
+                    <!-- 
+                    Ejemplo de Actividad:
+                    Titulo de la actividad: "Jornada de Limpieza Comunitaria"
+                    Descripción: "Únete a nosotros para limpiar parques y áreas públicas en nuestra comunidad. Proporcionaremos todo el equipo necesario."
+                    Fecha y Hora: "15 de Julio de 2024, 9:00 AM - 1:00 PM"
+                    Ubicación: "Parque de Nariño, Ciudad Pasto"
+                    Perfil de Voluntario Requerido: "Personas comprometidas con el medio ambiente y la comunidad."
+                    -->
                 </div>
             </div>
             {% endfor %}
@@ -45,24 +54,25 @@
 
 <div class="row">
     <div class="col-12">
-        <h2>Assignments</h2>
+        <h2>Asignaciones</h2>
         <div class="row">
             {% for assignment in assignments %}
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">{{ assignment.activity.title }}</h5>
-                        <p><strong>Volunteer:</strong> {{ assignment.volunteer.get_full_name }}</p>
-                        <p><strong>Status:</strong> 
+                        <p><strong>Voluntario:</strong> {{ assignment.volunteer.get_full_name }}</p>
+                        <p><strong>Estado:</strong>
                             <span class="badge bg-{% if assignment.status == 'confirmed' %}success{% elif assignment.status == 'assigned' %}warning{% else %}secondary{% endif %}">{{ assignment.status|title }}</span>
                         </p>
+                        <a href="{% url 'record_attendance' assignment.id %}" class="btn btn-primary">Registrar Asistencia</a>
                     </div>
                 </div>
             </div>
             {% empty %}
             <div class="col-12">
                 <div class="alert alert-info text-center">
-                    <h5>No assignments yet.</h5>
+                    <h5>No hay asignaciones aún.</h5>
                 </div>
             </div>
             {% endfor %}
@@ -73,7 +83,7 @@
 {% else %}
 <div class="row mb-5">
     <div class="col-12">
-        <h2>Your Assignments</h2>
+        <h2>Tus Asignaciones</h2>
         <div class="row">
             {% for assignment in assignments %}
             <div class="col-md-6 col-lg-4 mb-4">
@@ -82,9 +92,9 @@
                         <h5 class="card-title">{{ assignment.activity.title }}</h5>
                         <p class="card-text">{{ assignment.activity.description|truncatechars:100 }}</p>
                         <div class="mt-auto">
-                            <p class="mb-1"><strong>Date:</strong> {{ assignment.activity.date|date:"F j, Y g:i A" }}</p>
-                            <p class="mb-2"><strong>Location:</strong> {{ assignment.activity.location }}</p>
-                            <p class="mb-2"><strong>Status:</strong> 
+                            <p class="mb-1"><strong>Fecha:</strong> {{ assignment.activity.date|date:"F j, Y g:i A" }}</p>
+                            <p class="mb-2"><strong>Ubicación:</strong> {{ assignment.activity.location }}</p>
+                            <p class="mb-2"><strong>Estado:</strong>
                                 <span class="badge bg-{% if assignment.status == 'confirmed' %}success{% elif assignment.status == 'assigned' %}warning{% else %}secondary{% endif %}">{{ assignment.status|title }}</span>
                             </p>
                         </div>
@@ -94,8 +104,8 @@
             {% empty %}
             <div class="col-12">
                 <div class="alert alert-info text-center">
-                    <h5>You have no assignments yet.</h5>
-                    <p>Browse activities and sign up to get started!</p>
+                    <h5>No tienes asignaciones aún.</h5>
+                    <p>Explora actividades e inscríbete para comenzar!</p>
                 </div>
             </div>
             {% endfor %}
@@ -105,7 +115,7 @@
 
 <div class="row">
     <div class="col-12">
-        <h2>All Activities</h2>
+        <h2>Todas las Actividades</h2>
         <div class="row">
             {% for activity in activities %}
             <div class="col-md-6 col-lg-4 mb-4">
@@ -114,13 +124,13 @@
                         <h5 class="card-title">{{ activity.title }}</h5>
                         <p class="card-text">{{ activity.description|truncatechars:100 }}</p>
                         <div class="mt-auto">
-                            <p class="mb-1"><strong>Date:</strong> {{ activity.date|date:"F j, Y g:i A" }}</p>
-                            <p class="mb-2"><strong>Location:</strong> {{ activity.location }}</p>
-                            <p class="mb-2"><strong>Volunteers Needed:</strong> {{ activity.required_volunteers }}</p>
-                            {% if not user.assignments.filter(activity=activity).exists %}
-                                <a href="{% url 'inscribe_activity' activity.id %}" class="btn btn-success w-100">Inscribe</a>
+                            <p class="mb-1"><strong>Fecha:</strong> {{ activity.date|date:"F j, Y g:i A" }}</p>
+                            <p class="mb-2"><strong>Ubicación:</strong> {{ activity.location }}</p>
+                            <p class="mb-2"><strong>Voluntarios Necesarios:</strong> {{ activity.required_volunteers }}</p>
+                            {% if activity.id not in assigned_activity_ids %}
+                                <a href="{% url 'inscribe_activity' activity.id %}" class="btn btn-success w-100">Inscribirse</a>
                             {% else %}
-                                <span class="text-muted">Already inscribed</span>
+                                <span class="text-muted">Ya inscrito</span>
                             {% endif %}
                         </div>
                     </div>
@@ -129,7 +139,7 @@
             {% empty %}
             <div class="col-12">
                 <div class="alert alert-info text-center">
-                    <h5>No activities available.</h5>
+                    <h5>No hay actividades disponibles.</h5>
                 </div>
             </div>
             {% endfor %}

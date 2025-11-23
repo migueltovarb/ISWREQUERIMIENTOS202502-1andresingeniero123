@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Certificado de Voluntariado</title>
+    <style>
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+            text-align: center;
+            margin: 50px;
+            border: 10px solid #2c3e50;
+            padding: 50px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 0;
+        }
+        h2 {
+            font-weight: normal;
+            margin-top: 5px;
+            color: #34495e;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 30px 0;
+            color: #555;
+        }
+        .signature {
+            margin-top: 50px;
+            font-style: italic;
+            border-top: 1px solid #777;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 5px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Certificado de Voluntariado</h1>
+    <h2>Otorgado a</h2>
+    <p><strong>{{ volunteer.get_full_name|default:volunteer.username }}</strong></p>
+    <p>Por haber completado <strong>{{ total_hours }}</strong> horas de voluntariado.</p>
+    <div class="signature">
+        Firma del Administrador
+    </div>
+</body>
+</html>

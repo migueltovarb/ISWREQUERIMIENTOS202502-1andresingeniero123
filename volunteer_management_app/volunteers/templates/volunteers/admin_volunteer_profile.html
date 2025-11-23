@@ -1,0 +1,25 @@
+{% extends "volunteers/base.html" %}
+
+{% load static %}
+{% block content %}
+  <h2>Perfil del Voluntario</h2>
+  <div class="row">
+    <div class="col-md-3">
+      {% if volunteer.profile_image %}
+        <img src="{{ volunteer.profile_image.url }}" alt="Foto de {{ volunteer.username }}" class="img-thumbnail" style="max-width: 200px;">
+      {% else %}
+        <img src="{% static 'default_profile.png' %}" alt="Sin foto" class="img-thumbnail" style="max-width: 200px;">
+      {% endif %}
+    </div>
+    <div class="col-md-9">
+      <p><strong>Nombre de usuario:</strong> {{ volunteer.username }}</p>
+      <p><strong>Correo electrónico:</strong> {{ volunteer.email }}</p>
+      <p><strong>Nombre completo:</strong> {{ volunteer.get_full_name }}</p>
+      <p><strong>Documento de identidad:</strong> {{ volunteer.document_id }}</p>
+      <p><strong>Teléfono:</strong> {{ volunteer.phone }}</p>
+      <p><strong>Dirección:</strong> {{ volunteer.address }}</p>
+      <p><strong>Áreas de interés:</strong> {{ volunteer.areas_of_interest }}</p>
+    </div>
+  </div>
+  <a href="{% url 'admin_volunteer_list' %}" class="btn btn-secondary mt-3">Volver a la lista</a>
+{% endblock %}

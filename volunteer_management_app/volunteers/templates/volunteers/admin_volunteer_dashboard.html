@@ -1,0 +1,73 @@
+{% extends "volunteers/base.html" %}
+
+{% load static %}
+{% block content %}
+  <h2>Panel de Voluntarios</h2>
+
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Perfil del Voluntario Seleccionado</h4>
+      {% if selected_volunteer %}
+        <div class="card mb-3">
+          {% if selected_volunteer.profile_image %}
+            <img src="{{ selected_volunteer.profile_image.url }}" class="card-img-top" alt="Foto de {{ selected_volunteer.username }}">
+          {% else %}
+            <img src="{% static 'default_profile.png' %}" class="card-img-top" alt="Sin foto">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ selected_volunteer.get_full_name|default:selected_volunteer.username }}</h5>
+            <p><strong>Email:</strong> {{ selected_volunteer.email }}</p>
+            <p><strong>Documento:</strong> {{ selected_volunteer.document_id }}</p>
+            <p><strong>Teléfono:</strong> {{ selected_volunteer.phone }}</p>
+            <p><strong>Dirección:</strong> {{ selected_volunteer.address }}</p>
+            <p><strong>Áreas de interés:</strong> {{ selected_volunteer.areas_of_interest }}</p>
+          </div>
+        </div>
+      {% else %}
+        <p>Seleccione un voluntario para ver su perfil detallado.</p>
+      {% endif %}
+    </div>
+
+    <div class="col-md-8">
+      <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Enviar Notificación</button>
+      </form>
+      <hr>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Nombre de usuario</th>
+            <th>Horas Totales</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for volunteer in volunteers_hours %}
+          <tr>
+            <td>
+              {% if volunteer.profile_image %}
+                <img src="{{ volunteer.profile_image.url }}" alt="Foto de {{ volunteer.username }}" width="50" height="50" style="border-radius: 50%;">
+              {% else %}
+                <img src="{% static 'default_profile.png' %}" alt="Sin foto" width="50" height="50" style="border-radius: 50%;">
+              {% endif %}
+            </td>
+            <td>{{ volunteer.username }}</td>
+            <td>{{ volunteer.total_hours|default:"0" }}</td>
+            <td>
+              <a href="?volunteer_id={{ volunteer.id }}" class="btn btn-outline-primary btn-sm">Ver Perfil</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4">No hay voluntarios registrados.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div> <!-- col-md-8 -->
+  </div> <!-- row -->
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'volunteers/base.html' %}
+
+{% block content %}
+<h2>Historial de Actividades de Voluntarios</h2>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Nombre del Voluntario</th>
+            <th>ID del Voluntario</th>
+            <th>Actividad Realizada</th>
+            <th>Completado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attendance in attendance_records %}
+        <tr>
+            <td>{{ attendance.recorded_at|date:"Y-m-d" }}</td>
+            <td>{{ attendance.recorded_at|time:"H:i:s" }}</td>
+            <td>{{ attendance.assignment.volunteer.get_full_name }}</td>
+            <td>{{ attendance.assignment.volunteer.id }}</td>
+            <td>{{ attendance.assignment.activity.title }}</td>
+            <td>{% if attendance.attended %}Sí{% else %}No{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No hay registros de actividades.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
